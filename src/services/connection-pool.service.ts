@@ -19,7 +19,7 @@ export function observeConnectionPool(options: IConnectionPoolOptions): IConnect
 
   if (existing && existing.system !== options.system) {
     warn(
-      `@omob/otel-kit reports pool "${options.name}" as ${existing.system ?? "no system"}, as first registered, not ${options.system ?? "no system"}`
+      `@ritele/otel-kit reports pool "${options.name}" as ${existing.system ?? "no system"}, as first registered, not ${options.system ?? "no system"}`
     );
   }
 
@@ -103,7 +103,7 @@ function readSafely(member: IConnectionPoolMember): IConnectionPoolSnapshot[] {
   try {
     return [member.read()];
   } catch (error) {
-    diag.debug(`@omob/otel-kit skipped a connection pool reading: ${(error as Error).message}`);
+    diag.debug(`@ritele/otel-kit skipped a connection pool reading: ${(error as Error).message}`);
 
     return [];
   }

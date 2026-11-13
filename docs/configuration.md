@@ -40,7 +40,7 @@ Only `serviceName` is required. Everything else has a working default.
 
 | Option | Default | What it does |
 | --- | --- | --- |
-| `metrics` | follows `traces` | Leave it out and, when traces go over OTLP, metrics go to the same collector: see the table under [Metrics](https://github.com/omob/otel-kit/blob/main/README.md#metrics). An OTLP block without a URL keeps that collector and its headers; with none to keep, it uses `OTEL_EXPORTER_OTLP_METRICS_ENDPOINT` or `OTEL_EXPORTER_OTLP_ENDPOINT`, and otherwise sends nothing and warns. `OTEL_METRICS_EXPORTER=none` turns metrics off whatever is set here; so does `metrics: { exporter: ExporterType.NONE }`. |
+| `metrics` | follows `traces` | Leave it out and, when traces go over OTLP, metrics go to the same collector: see the table under [Metrics](https://github.com/ritele-io/otel-kit/blob/main/README.md#metrics). An OTLP block without a URL keeps that collector and its headers; with none to keep, it uses `OTEL_EXPORTER_OTLP_METRICS_ENDPOINT` or `OTEL_EXPORTER_OTLP_ENDPOINT`, and otherwise sends nothing and warns. `OTEL_METRICS_EXPORTER=none` turns metrics off whatever is set here; so does `metrics: { exporter: ExporterType.NONE }`. |
 | `metrics.exporter` | `otlp` when traces go over OTLP, otherwise `none` | `none` · `console` · `otlp` · `gcp` · `prometheus` |
 | `metrics.exportIntervalMillis` | `30000` | How often metrics are pushed. Prometheus ignores it — it's pull-based. |
 | `metrics.prometheus` | `127.0.0.1:9464` | `host`, `port`, `endpoint`. Binds loopback by default — the endpoint is unauthenticated, so only widen it behind a private network. |

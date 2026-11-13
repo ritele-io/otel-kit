@@ -41,8 +41,8 @@ withSpan("consumer.step", { attributes: { "step.name": "checkout" } }, async () 
 
 const TYPED_APP = `
 import { DiagLogLevel } from "@opentelemetry/api";
-import { ExporterType, InstrumentationName, OtlpProtocol, PropagatorType, Telemetry, withSpan } from "@omob/otel-kit";
-import type { ITelemetryConfig } from "@omob/otel-kit";
+import { ExporterType, InstrumentationName, OtlpProtocol, PropagatorType, Telemetry, withSpan } from "@ritele/otel-kit";
+import type { ITelemetryConfig } from "@ritele/otel-kit";
 
 const config: ITelemetryConfig = {
   serviceName: "typed-consumer",
@@ -92,7 +92,7 @@ const tarball = () => {
 
 const checks = {
   commonjs: (dir, pack) => {
-    writeFileSync(join(dir, "index.js"), APP.replace("MODULE", 'require("@omob/otel-kit")'));
+    writeFileSync(join(dir, "index.js"), APP.replace("MODULE", 'require("@ritele/otel-kit")'));
     npm(["install", "--no-audit", "--no-fund", pack, "@opentelemetry/api"], dir);
 
     return run("node", ["index.js"], dir);
@@ -100,7 +100,7 @@ const checks = {
   esm: (dir, pack) => {
     writeFileSync(
       join(dir, "index.js"),
-      `import { Telemetry, withSpan, currentTraceId, ExporterType } from "@omob/otel-kit";${APP.split("\n").slice(2).join("\n")}`
+      `import { Telemetry, withSpan, currentTraceId, ExporterType } from "@ritele/otel-kit";${APP.split("\n").slice(2).join("\n")}`
     );
     npm(["install", "--no-audit", "--no-fund", pack, "@opentelemetry/api"], dir);
 
@@ -115,7 +115,7 @@ const checks = {
     return "CONSUMER_OK";
   },
   pnpm: (dir, pack) => {
-    writeFileSync(join(dir, "index.js"), APP.replace("MODULE", 'require("@omob/otel-kit")'));
+    writeFileSync(join(dir, "index.js"), APP.replace("MODULE", 'require("@ritele/otel-kit")'));
     // pnpm fails an install that skipped a dependency's build script, and protobufjs ships one; the equals form is what both pnpm 10 and 12 parse
     run(
       "pnpm",

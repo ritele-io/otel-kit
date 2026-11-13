@@ -103,7 +103,7 @@ describe("withSpan", () => {
     expect(spanNamed("scoped").instrumentationScope).toMatchObject({ name: "auth-module", version: "1.2.3" });
   });
 
-  it("defaults the instrumentation scope to the package name", async () => {
+  it("defaults the instrumentation scope to the kit scope", async () => {
     await withSpan("unscoped", async () => undefined);
 
     expect(spanNamed("unscoped").instrumentationScope.name).toBe("@omob/otel-kit");

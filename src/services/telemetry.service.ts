@@ -146,8 +146,8 @@ class TelemetryService {
     if (config.metrics && config.metrics.exporter !== ExporterType.NONE && metrics.exporter === ExporterType.NONE) {
       warn(
         MetricConfigFactory.turnedOffByEnvironment()
-          ? "@omob/otel-kit exports no metrics: OTEL_METRICS_EXPORTER=none overrides the metrics block in code"
-          : "@omob/otel-kit exports no metrics: the metrics block has no URL, and none follows from traces or OTEL_EXPORTER_OTLP_ENDPOINT"
+          ? "@ritele/otel-kit exports no metrics: OTEL_METRICS_EXPORTER=none overrides the metrics block in code"
+          : "@ritele/otel-kit exports no metrics: the metrics block has no URL, and none follows from traces or OTEL_EXPORTER_OTLP_ENDPOINT"
       );
     }
 
@@ -156,8 +156,8 @@ class TelemetryService {
     if (config.logs && config.logs.exporter !== ExporterType.NONE && logs.exporter === ExporterType.NONE) {
       warn(
         LogConfigFactory.turnedOffByEnvironment()
-          ? "@omob/otel-kit exports no logs: OTEL_LOGS_EXPORTER=none overrides the logs block in code"
-          : "@omob/otel-kit exports no logs: the logs block has no URL, and none follows from traces, OTEL_EXPORTER_OTLP_LOGS_ENDPOINT or OTEL_EXPORTER_OTLP_ENDPOINT"
+          ? "@ritele/otel-kit exports no logs: OTEL_LOGS_EXPORTER=none overrides the logs block in code"
+          : "@ritele/otel-kit exports no logs: the logs block has no URL, and none follows from traces, OTEL_EXPORTER_OTLP_LOGS_ENDPOINT or OTEL_EXPORTER_OTLP_ENDPOINT"
       );
     }
 
@@ -233,7 +233,7 @@ class TelemetryService {
       return;
     }
 
-    console.error("@omob/otel-kit is disabled, its configuration was rejected:", error.message);
+    console.error("@ritele/otel-kit is disabled, its configuration was rejected:", error.message);
   }
 
   // the sdk drags in every exporter, so it stays out of the module graph of apps that only import the span helpers
@@ -247,7 +247,7 @@ class TelemetryService {
     for (const signal of SHUTDOWN_SIGNALS) {
       const handler = () => {
         this.shutdown(timeoutMillis)
-          .catch((error) => console.error("@omob/otel-kit failed to flush telemetry on shutdown", error))
+          .catch((error) => console.error("@ritele/otel-kit failed to flush telemetry on shutdown", error))
           .finally(() => this.resumeSignal(signal, config.exitOnSignal === true));
       };
 

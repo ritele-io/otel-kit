@@ -168,7 +168,7 @@ The model assumes one Node process per replica. Under `cluster` or PM2, each wor
 **Connection pools with knex** — knex keeps its pool on `client.pool`. Name each pool `host:port/database`, the way a backend such as Ritele matches a pool to the database it belongs to, and register every knex instance you create. Two instances that reach the same database, such as a primary and a replica that falls back to the primary's host, share that name, and their readings add into one series:
 
 ```ts
-import { observeConnectionPool } from "@omob/otel-kit";
+import { observeConnectionPool } from "@ritele/otel-kit";
 
 declare const primary: KnexLike;
 declare const replica: KnexLike;

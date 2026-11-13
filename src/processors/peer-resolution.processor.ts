@@ -17,7 +17,7 @@ class PeerResolutionProcessor implements SpanProcessor {
       if (host.startsWith("*.")) {
         this.suffixes.push([host.slice(1).toLowerCase(), name]);
       } else if (host.includes("*")) {
-        warn(`@omob/otel-kit ignores the peer pattern "${host}"; only an exact host or a *.suffix matches`);
+        warn(`@ritele/otel-kit ignores the peer pattern "${host}"; only an exact host or a *.suffix matches`);
       } else {
         this.exact.set(host.toLowerCase(), name);
       }

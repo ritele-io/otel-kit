@@ -128,7 +128,7 @@ class ResourceDetectorFactory {
     const names = configured.split(",").map((name) => name.trim()).filter(Boolean);
 
     for (const unknown of names.filter((name) => !known.has(name))) {
-      warn(`@omob/otel-kit ignores the unknown resource detector "${unknown}" in ${EnvironmentVariable.RESOURCE_DETECTORS}`);
+      warn(`@ritele/otel-kit ignores the unknown resource detector "${unknown}" in ${EnvironmentVariable.RESOURCE_DETECTORS}`);
     }
 
     return names.filter((name): name is ResourceDetectorName => known.has(name));
