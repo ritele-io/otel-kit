@@ -1,4 +1,4 @@
-# @omob/otel-kit
+# @ritele/otel-kit
 
 OpenTelemetry setup for Node services, in one function call.
 
@@ -14,10 +14,17 @@ You work down the table: a latency spike at 14:02 in the metrics leads you to th
 
 Tracing is the one that connects the other two, and it is what this package is mostly for. You pick where traces, metrics and logs go; it handles the SDK, the sampling, the shutdown flush and the boilerplate around spans, and stamps `trace_id` into your logs so every line leads back to its trace.
 
+## Moving from `@omob/otel-kit`
+
+1. `npm uninstall @omob/otel-kit && npm install @ritele/otel-kit`
+2. Change the import specifier to `@ritele/otel-kit`.
+
+The API, environment variables and telemetry are unchanged.
+
 ## Install
 
 ```bash
-npm install @omob/otel-kit @opentelemetry/api
+npm install @ritele/otel-kit @opentelemetry/api
 ```
 
 That is everything for most setups. OTLP — protobuf, JSON and gRPC — and Prometheus are already included.
@@ -30,7 +37,7 @@ Extra packages are needed for Google Cloud only, and which one depends on the ro
 | `ExporterType.GCP` for **metrics** | `@google-cloud/opentelemetry-cloud-monitoring-exporter` |
 | Google Cloud over **OTLP** | `google-auth-library` — and neither of the above |
 
-They are independent: exporting traces to Google needs the trace package only. Google is deprecating both in favour of the OTLP route, which is covered under [recipes](https://github.com/omob/otel-kit/blob/main/docs/recipes.md).
+They are independent: exporting traces to Google needs the trace package only. Google is deprecating both in favour of the OTLP route, which is covered under [recipes](https://github.com/ritele-io/otel-kit/blob/main/docs/recipes.md).
 
 If you pick an exporter whose package is not installed, startup fails and names the package.
 
@@ -40,7 +47,7 @@ Create `src/instrumentation.ts`:
 
 ```ts
 import "dotenv/config";
-import { ExporterType, Telemetry } from "@omob/otel-kit";
+import { ExporterType, Telemetry } from "@ritele/otel-kit";
 
 Telemetry.start({
   serviceName: "my-service",
@@ -123,7 +130,7 @@ Every span, metric and log is stamped with who sent it, so a backend can tell se
 | `host.name`, `host.id` | detected at startup. On a personal machine — macOS, Windows, or Linux with a desktop session or under WSL — both are replaced by stable pseudonyms such as `host-3fa9c1d2e4b7`, because the name is usually its owner's (`Ada-MacBook-Pro`) and the id is a hardware fingerprint. Linux servers, containers and pods send them as they are. See `hostName` below |
 | `host.arch`, `process.pid`, `process.runtime.*` | detected at startup |
 | `container.id` | detected at startup under Docker and on hosts with cgroup v1. Most current Kubernetes clusters (containerd with cgroup v2, as on EKS, GKE and AKS) don't expose it to the process, so it is left out there |
-| `k8s.pod.name`, `k8s.namespace.name`, `k8s.container.name`, … | not detected — pass them in through `OTEL_RESOURCE_ATTRIBUTES`, as the [Kubernetes recipe](https://github.com/omob/otel-kit/blob/main/docs/recipes.md) shows. Pod, namespace and container name are what the cluster's own metrics are labelled with, so they are the attributes to set |
+| `k8s.pod.name`, `k8s.namespace.name`, `k8s.container.name`, … | not detected — pass them in through `OTEL_RESOURCE_ATTRIBUTES`, as the [Kubernetes recipe](https://github.com/ritele-io/otel-kit/blob/main/docs/recipes.md) shows. Pod, namespace and container name are what the cluster's own metrics are labelled with, so they are the attributes to set |
 
 **Ids in URLs are masked.** An account number, email, UUID, token or document number in a request path or query string becomes `*` in `url.path`, `url.query` and `url.full` before a span leaves the process: `/v1/customers/22123456789?email=ada@example.com&page=2` is sent as `/v1/customers/*?email=*&page=2`. `http.route` keeps the route template (`/v1/customers/:id`), so grouping by route loses nothing. The rules were checked against every path segment of a large production codebase, so route names such as `process-multi-payment-wallet-credit-retry` or `confirm-otp-v2` stay readable. They are rules, not a guarantee: a short technical name with digits (`sha256`, `base64`, `top-10`) is masked too, and an id made only of letters and shorter than 24 characters is not. Query values such as a person's name have no shape to match, so if yours carry them, set `traces.redactQuery: QueryRedaction.DROP` to send no query strings at all. Set `traces.redactPathSegments: false` if you need raw URLs. Masking runs as every span ends — failed and aborted requests included, unlike a hook that only sees responses — and applies to `url.*` values whatever set them, your own instrumentation hooks included, so a hook that blanks the query keeps it blank. `DROP` applies even with `redactPathSegments: false`.
 
@@ -140,7 +147,7 @@ You stay in control. `hostName` decides the host name and id: `HostNameMode.AUTO
 Add one when you want a step to show up as its own line in the trace: a slow query, an external API call, a step you suspect. Skip it for cheap in-memory work — a span costs more than the code it measures.
 
 ```ts
-import { withSpan } from "@omob/otel-kit";
+import { withSpan } from "@ritele/otel-kit";
 
 async function login({ email, password }) {
   return withSpan("login", { attributes: { "auth.method": "password" } }, async (span) => {
@@ -190,7 +197,7 @@ Telemetry.start({
 
 Each exporting service also carries `ritele.trace.sample_probability`: how likely it is to keep a trace **it starts**. That is `sampleRatio + docTraceRatio`, capped at 1 — the two ranges never overlap, so they simply add. With the settings above it is 0.03, so a backend can multiply a count of this service's root spans by about 33 to estimate the real number. It says nothing about traces that arrive from a caller: those are kept or dropped by the caller's decision. The attribute is left out when you pass your own `traces.sampler`, since the kit can't know its rate.
 
-The attribute names live under `ritele.*`, the namespace of [Ritele](https://github.com/omob/ritele); any other backend ignores them.
+The attribute names live under `ritele.*`, the namespace of [Ritele](https://ritele.io); any other backend ignores them.
 
 Not every failure is a fault. A wrong password is an expected outcome, and marking it as a span error means your error rate tracks how often users mistype. Pass `isError` to say which throws actually count:
 
@@ -203,7 +210,7 @@ Never put emails, tokens or passwords in attributes — spans are stored unredac
 Two more helpers:
 
 ```ts
-import { currentTraceId, getTracer } from "@omob/otel-kit";
+import { currentTraceId, getTracer } from "@ritele/otel-kit";
 
 currentTraceId();            // trace id of the active span, or undefined
 getTracer("auth-module");    // pass as `tracer` in withSpan options to name the scope
@@ -294,7 +301,7 @@ You do not change how you log. If you use pino, winston or bunyan, the log instr
 A slow query and a query stuck waiting for a free connection look the same from outside. The difference only shows inside your process, where the pool knows its limit (`max: 20`) and how many callers are queued. Register the pool and the kit reports it:
 
 ```ts
-import { observeConnectionPool } from "@omob/otel-kit";
+import { observeConnectionPool } from "@ritele/otel-kit";
 
 const pool = new Pool({ max: 20 });
 
@@ -323,7 +330,7 @@ You get:
 
 A pool at its limit with a queue behind it means the bottleneck is your pool size, not the database. It works with any pool — Postgres, MySQL, Mongo, Redis — because you supply the `read` function.
 
-**Several pools, one database?** Register each under the same name and their readings add into one series, which is what the database sees from your service. A primary and a replica that point at the same host when no replica is configured are the usual case. Stopping one leaves the others reporting. The [knex recipe](https://github.com/omob/otel-kit/blob/main/docs/recipes.md) shows this for knex.
+**Several pools, one database?** Register each under the same name and their readings add into one series, which is what the database sees from your service. A primary and a replica that point at the same host when no replica is configured are the usual case. Stopping one leaves the others reporting. The [knex recipe](https://github.com/ritele-io/otel-kit/blob/main/docs/recipes.md) shows this for knex.
 
 **Using `pg`?** The pg instrumentation also reports these metrics for `pg-pool`, under the same names. Its numbers are only right while you have a single pool: with two or more, its counts drift and can go negative. Register your pools here anyway, and have your backend read the `@omob/otel-kit` scope. Ritele prefers these measured numbers over `architecture.concurrency.pgPool`, which it only uses for a pool nothing measures.
 
@@ -340,14 +347,14 @@ Telemetry.start({
 });
 ```
 
-That emits `process.cpu.time`, split by `cpu.mode`, and the resource attribute `ritele.cpu.limit`. Replicas are counted from `service.instance.id`, which the kit sets to a random id per process unless you supply one. To observe CPU without the config flag, call `observeCpuUsage()` after `Telemetry.start()`; it returns `{ stop }`. See [Recipes](https://github.com/omob/otel-kit/blob/main/docs/recipes.md) for reading the limit from Kubernetes.
+That emits `process.cpu.time`, split by `cpu.mode`, and the resource attribute `ritele.cpu.limit`. Replicas are counted from `service.instance.id`, which the kit sets to a random id per process unless you supply one. To observe CPU without the config flag, call `observeCpuUsage()` after `Telemetry.start()`; it returns `{ stop }`. See [Recipes](https://github.com/ritele-io/otel-kit/blob/main/docs/recipes.md) for reading the limit from Kubernetes.
 
 ## More
 
-- [Configuration](https://github.com/omob/otel-kit/blob/main/docs/configuration.md) — every option, shutdown behaviour, and what happens when a config is rejected
-- [Recipes](https://github.com/omob/otel-kit/blob/main/docs/recipes.md) — Jaeger, Google Cloud, Prometheus, gRPC collectors, per-instrumentation options
-- [Troubleshooting](https://github.com/omob/otel-kit/blob/main/docs/troubleshooting.md) — no traces appearing, wrong service name, broken propagation
-- [Concepts](https://github.com/omob/otel-kit/blob/main/docs/concepts.md) — traces, spans, sampling and propagation, if OpenTelemetry is new to you
+- [Configuration](https://github.com/ritele-io/otel-kit/blob/main/docs/configuration.md) — every option, shutdown behaviour, and what happens when a config is rejected
+- [Recipes](https://github.com/ritele-io/otel-kit/blob/main/docs/recipes.md) — Jaeger, Google Cloud, Prometheus, gRPC collectors, per-instrumentation options
+- [Troubleshooting](https://github.com/ritele-io/otel-kit/blob/main/docs/troubleshooting.md) — no traces appearing, wrong service name, broken propagation
+- [Concepts](https://github.com/ritele-io/otel-kit/blob/main/docs/concepts.md) — traces, spans, sampling and propagation, if OpenTelemetry is new to you
 
 ## Licence
 

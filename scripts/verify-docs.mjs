@@ -38,7 +38,7 @@ void [app, logger, url, fastify, handler, AppError, RedactingSpanProcessor, find
 `;
 
 const OTEL_IMPORTS = `
-import { Telemetry, withSpan, getTracer, currentTraceId, ArchitectureComponentType, ExporterType, InstrumentationName, OtlpProtocol, PropagatorType } from "@omob/otel-kit";
+import { Telemetry, withSpan, getTracer, currentTraceId, ArchitectureComponentType, ExporterType, InstrumentationName, OtlpProtocol, PropagatorType } from "@ritele/otel-kit";
 import { DiagLogLevel } from "@opentelemetry/api";
 void [Telemetry, withSpan, getTracer, currentTraceId, ArchitectureComponentType, ExporterType, InstrumentationName, OtlpProtocol, PropagatorType, DiagLogLevel];
 `;
@@ -60,7 +60,7 @@ const missingImports = (code) => {
   const names = OUR_NAMES.filter((n) => !imported.has(n) && new RegExp(`\\b${n}\\b`).test(code));
   const diag = !imported.has("DiagLogLevel") && /\bDiagLogLevel\b/.test(code);
 
-  return (names.length ? `import { ${names.join(", ")} } from "@omob/otel-kit";\n` : "") +
+  return (names.length ? `import { ${names.join(", ")} } from "@ritele/otel-kit";\n` : "") +
     (diag ? 'import { DiagLogLevel } from "@opentelemetry/api";\n' : "");
 };
 

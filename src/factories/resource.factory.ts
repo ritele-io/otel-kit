@@ -81,7 +81,7 @@ class ResourceFactory {
       if (Number.isFinite(limit) && limit > 0) {
         out[`${ArchitectureAttribute.CONCURRENCY_PREFIX}${key}`] = limit;
       } else {
-        warn(`@omob/otel-kit ignores the concurrency limit "${key}: ${limit}"; it must be a positive number`);
+        warn(`@ritele/otel-kit ignores the concurrency limit "${key}: ${limit}"; it must be a positive number`);
       }
     }
 
@@ -89,7 +89,7 @@ class ResourceFactory {
       if (Number.isFinite(cpuLimit) && cpuLimit > 0) {
         out[ArchitectureAttribute.CPU_LIMIT] = cpuLimit;
       } else {
-        warn(`@omob/otel-kit ignores the CPU limit "${cpuLimit}"; it must be a positive number of cores`);
+        warn(`@ritele/otel-kit ignores the CPU limit "${cpuLimit}"; it must be a positive number of cores`);
       }
     }
 

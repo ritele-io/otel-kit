@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.13.0
+
+**Upgrading from `@omob/otel-kit`?** The package is now `@ritele/otel-kit` and lives at [ritele-io/otel-kit](https://github.com/ritele-io/otel-kit). Move in two steps: `npm uninstall @omob/otel-kit && npm install @ritele/otel-kit`, then change the import specifier. Nothing else changes: same API, same environment variables, same telemetry, including the instrumentation scope name `@omob/otel-kit`, which backends already deployed recognise.
+
+`@omob/otel-kit` 0.12.x keeps working and receives no further features.
+
 ## 0.12.0
 
 **Upgrading?** If metrics such as GC time, request counts or CPU time have looked doubled or impossible — GC above 100%, a series whose start time keeps changing — this release is likely the fix: see the first item below.

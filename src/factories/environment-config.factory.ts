@@ -47,7 +47,7 @@ class EnvironmentConfigFactory {
     }
 
     if (sampler && !RATIO_SAMPLERS.includes(sampler)) {
-      warn(`@omob/otel-kit ignores ${EnvironmentVariable.TRACES_SAMPLER}="${sampler}"; it sets only ratio samplers`);
+      warn(`@ritele/otel-kit ignores ${EnvironmentVariable.TRACES_SAMPLER}="${sampler}"; it sets only ratio samplers`);
 
       return undefined;
     }
@@ -60,7 +60,7 @@ class EnvironmentConfigFactory {
 
     if (!Number.isFinite(ratio) || ratio < 0 || ratio > 1) {
       warn(
-        `@omob/otel-kit ignores ${EnvironmentVariable.TRACES_SAMPLER_ARG}="${argument}"; it must be a number from 0 to 1`
+        `@ritele/otel-kit ignores ${EnvironmentVariable.TRACES_SAMPLER_ARG}="${argument}"; it must be a number from 0 to 1`
       );
 
       return undefined;
@@ -80,7 +80,7 @@ class EnvironmentConfigFactory {
 
     if (!Number.isFinite(cores) || cores <= 0) {
       warn(
-        `@omob/otel-kit ignores ${EnvironmentVariable.CPU_LIMIT_MILLICORES}="${millicores}"; it must be a positive number`
+        `@ritele/otel-kit ignores ${EnvironmentVariable.CPU_LIMIT_MILLICORES}="${millicores}"; it must be a positive number`
       );
 
       return undefined;

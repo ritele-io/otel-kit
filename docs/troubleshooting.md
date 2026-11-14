@@ -56,4 +56,4 @@ Pass `diagLogger` to send it to your own logger instead of the console. With tha
 
 **Metrics arrive, but two services share one `service.version`.** The version comes from the `package.json` your start script ran from. In a monorepo started from the root, that is the root's version for every service. Set `serviceVersion` in each service's config.
 
-**Pool metrics look wrong or go negative on a service with more than one `pg` pool.** Those numbers come from the pg instrumentation, which only tracks one pool correctly. Register each pool with `observeConnectionPool()` and read the `@omob/otel-kit` scope; see [Connection pools](https://github.com/omob/otel-kit/blob/main/README.md#connection-pools).
+**Pool metrics look wrong or go negative on a service with more than one `pg` pool.** Those numbers come from the pg instrumentation, which only tracks one pool correctly. Register each pool with `observeConnectionPool()` and read the `@omob/otel-kit` scope; see [Connection pools](https://github.com/ritele-io/otel-kit/blob/main/README.md#connection-pools).

@@ -3,7 +3,7 @@ import { pathToFileURL } from "url";
 
 const HOOK_SPECIFIER = "import-in-the-middle/hook.mjs";
 // the loader hook is process-wide, so the guard must survive module re-evaluation (jest isolates module registries per file)
-const REGISTERED = Symbol.for("@omob/otel-kit.esmHookRegistered");
+const REGISTERED = Symbol.for("@ritele/otel-kit.esmHookRegistered");
 const state = globalThis as unknown as Record<symbol, boolean | undefined>;
 
 // the ESM loader never consults require-in-the-middle, so ESM imports stay unpatched until this hook is registered

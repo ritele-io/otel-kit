@@ -19,13 +19,13 @@ class InstrumentationFactory {
 
     if (InstrumentationFactory.loadsAutoRegister()) {
       warn(
-        `@omob/otel-kit found ${AUTO_REGISTER_MODULE} in NODE_OPTIONS or the node flags; it registers a second set of instrumentations and its own SDK, so spans and metrics are recorded twice. Remove it: otel-kit registers them already`
+        `@ritele/otel-kit found ${AUTO_REGISTER_MODULE} in NODE_OPTIONS or the node flags; it registers a second set of instrumentations and its own SDK, so spans and metrics are recorded twice. Remove it: otel-kit registers them already`
       );
     }
 
     // registering after the app has imported a module is too late to patch it
     if (config.esmHook !== false && !registerEsmHook()) {
-      warn("@omob/otel-kit could not register the ESM loader hook, only CommonJS requires are instrumented");
+      warn("@ritele/otel-kit could not register the ESM loader hook, only CommonJS requires are instrumented");
     }
 
     if (config.only) {
@@ -109,7 +109,7 @@ class InstrumentationFactory {
 
       return [new FastifyOtelInstrumentation({ registerOnInitialization: true, ...options })];
     } catch (error) {
-      warn(`@omob/otel-kit skipped fastify instrumentation: ${(error as Error).message}`);
+      warn(`@ritele/otel-kit skipped fastify instrumentation: ${(error as Error).message}`);
 
       return [];
     }
